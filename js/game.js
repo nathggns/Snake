@@ -1,7 +1,7 @@
 var Game = (function(window, document, undefined) {
 
-    var Game = function Game() {};
+  var Game = function Game() {};
 
-    return Game;
+  return Game;
 
 })(this, this.document);
