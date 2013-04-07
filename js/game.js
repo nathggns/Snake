@@ -5,13 +5,13 @@ var Game = (function(window, document, undefined) {
     this.objects = [];
   };
 
-  this.add = function(obj) {
+  Game.prototype.add = function(obj) {
     this.objects.push(obj);
 
     return this;
   };
 
-  this.remove = function(obj) {
+  Game.prototype.remove = function(obj) {
     this.objects.splice(this.objects.indexOf(obj), 1);
 
     return this;
