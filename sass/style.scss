@@ -1,2 +1,13 @@
 @import "compass/css3";
 @import "compass/reset";
+@import "_utility";
+
+/* Page Styles */
+body {
+    background: black;
+}
+
+.game {
+    width: 500px;
+    height: 500px;
+}
