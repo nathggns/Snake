@@ -23,4 +23,22 @@
 
   window.addEventListener('resize', scale());
 
+  var game = new Game(canvas);
+
+  var Background = (function() {
+    var Background = function Background() {};
+
+    Background.prototype.render = function(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = this.background;
+        ctx.rect(0, 0, this.game.game.width, this.game.game.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+    };
+
+    return Background;
+  })();
+
+  game.add(new Background());
+
 })(this, this.document);
