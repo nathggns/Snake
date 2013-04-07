@@ -26,7 +26,9 @@
   var game = new Game(canvas);
 
   var Background = (function() {
-    var Background = function Background() {};
+    var Background = function Background() {
+        this.order = 1;
+    };
 
     Background.prototype.render = function(ctx) {
         ctx.beginPath();
@@ -39,6 +41,29 @@
     return Background;
   })();
 
+  var Player = (function() {
+
+    var Player = function Player() {
+        this.order = 2;
+        this.width = this.height = 50;
+    };
+
+    Player.prototype.render = function(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = '#aaaaaa';
+
+        var x = (this.game.game.width / 2) - (this.width / 2);
+        var y = (this.game.game.height / 2) - (this.height / 2);
+
+        ctx.rect(x, y, this.width, this.height);
+        ctx.fill();
+    };
+
+    return Player;
+
+  })();
+
   game.add(new Background());
+  game.add(new Player());
 
 })(this, this.document);

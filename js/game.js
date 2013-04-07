@@ -13,6 +13,13 @@ var Game = (function(window, document, undefined) {
   Game.prototype.add = function(obj) {
     this.objects.push(obj);
 
+    this.objects.sort(function(a, b) {
+      if (typeof a.order === 'undefined') a.order = this.objects.indexOf(a);
+      if (typeof b.order === 'undefined') b.order = this.objects.indexOf(b);
+
+      return a.order > b.order ? 1 : -1;
+    });
+
     return this;
   };
 
