@@ -25,6 +25,8 @@
 
   var game = new Game(canvas);
 
+  var size = 14;
+
   var Background = (function() {
     var Background = function Background() {
         this.order = 1;
@@ -33,16 +35,15 @@
     Background.prototype.render = function(ctx) {
         var color = '#ffffff';
 
-        for (var i = 0, l = this.game.game.width / 70; i < l; i++) {
+        for (var i = 0, l = this.game.game.width / size; i < l; i++) {
 
-            for (j = 0, k = this.game.game.height / 70; j < k; j++) {
+            for (j = 0, k = this.game.game.height / size; j < k; j++) {
                 ctx.beginPath();
                 ctx.fillStyle = this.background;
-                ctx.rect(70 * i, 70 * j, 70, 70);
+                ctx.rect(size * i, size * j, size, size);
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                
                 if (color === '#ffffff') {
                     color = '#dddddd';
                 } else {
@@ -59,16 +60,15 @@
 
     var Player = function Player() {
         this.order = 2;
-        this.width = this.height = 70;
+        this.width = this.height = size * 2;
 
-        this.speed = 2;
+        this.speed = 1.5;
 
         this.direction = ['y', 1, 'height'];
     };
 
     Player.prototype.init = function() {
-        this.x = (this.game.game.width / 2) - (this.width / 2);
-        this.y = (this.game.game.height / 2) - (this.height / 2);
+        this.x = this.y = 0;
     };
 
     Player.prototype.update = function() {
@@ -97,7 +97,12 @@
         if (direction) {
             (function() {
                 if (direction[0] === player.direction[0]) return;
-                player.direction = direction;
+
+                if (player[player.direction[0]] % size === 0) {
+                    player.direction = direction;
+                } else {
+                    player.timer = setTimeout(arguments.callee, 1);
+                }
             })();
         }
 
