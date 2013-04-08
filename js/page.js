@@ -46,16 +46,52 @@
     var Player = function Player() {
         this.order = 2;
         this.width = this.height = 50;
+
+        this.speed = 2;
+    };
+
+    Player.prototype.init = function() {
+        this.x = (this.game.game.width / 2) - (this.width / 2);
+        this.y = (this.game.game.height / 2) - (this.height / 2);
+    };
+
+    Player.prototype.update = function() {
+        if (37 in game.keys) {
+            this.x -= this.speed;
+        }
+
+        if (39 in game.keys) {
+            this.x += this.speed;
+        }
+
+        if (38 in game.keys) {
+            this.y -= this.speed;
+        }
+
+        if (40 in game.keys) {
+            this.y += this.speed;
+        }
+
+        if (this.y > (this.game.game.height - this.height)) {
+            this.y = this.game.game.height - this.height;
+        } else if (this.y < 0) {
+            this.y = 0;
+        }
+
+        if (this.x < 0) {
+            this.x = 0;
+        } else if (this.x > (this.game.game.width - this.width)) {
+            this.x = this.game.game.width - this.width;
+        }
     };
 
     Player.prototype.render = function(ctx) {
         ctx.beginPath();
         ctx.fillStyle = '#aaaaaa';
 
-        var x = (this.game.game.width / 2) - (this.width / 2);
-        var y = (this.game.game.height / 2) - (this.height / 2);
 
-        ctx.rect(x, y, this.width, this.height);
+
+        ctx.rect(this.x, this.y, this.width, this.height);
         ctx.fill();
     };
 

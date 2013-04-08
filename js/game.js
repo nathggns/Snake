@@ -5,12 +5,19 @@ var Game = (function(window, document, undefined) {
     this.objects = [];
     this.ctx = this.canvas.getContext('2d');
     this.game = {};
+    this.keys = {};
 
     this.assignResizeHandler();
+    this.assignKeyHandler();
     this.startLoop();
   };
 
   Game.prototype.add = function(obj) {
+
+    obj.game = this;
+
+    if (typeof obj.init === 'function') obj.init();
+
     this.objects.push(obj);
 
     this.objects.sort(function(a, b) {
@@ -44,6 +51,32 @@ var Game = (function(window, document, undefined) {
    document.addEventListener('resize', handler());
   };
 
+  Game.prototype.assignKeyHandler = function() {
+    var canvas = this.canvas;
+
+    if (!canvas.attributes.getNamedItem('tabindex')) {
+      canvas.setAttribute('tabindex', -1);
+    }
+
+    canvas.focus();
+
+    var game = this;
+
+    canvas.addEventListener('keydown', function(e) {
+      game.keys[e.which] = true;
+    });
+
+    canvas.addEventListener('keyup', function(e) {
+      while (e.which in game.keys) {
+        delete game.keys[e.which];
+      }
+    });
+
+    canvas.addEventListener('blur', function(e) {
+      game.keys = {};
+    });
+  };
+
   Game.prototype.startLoop = function() {
     var requestAnimationFrame =
           window.requestAnimationFrame ||
@@ -61,9 +94,6 @@ var Game = (function(window, document, undefined) {
       game.ctx.clearRect(0, 0, game.game.width, game.game.height);
 
       game.objects.forEach(function(object) {
-
-        object.game = game;
-
         if (object.update) object.update(game.ctx);
         object.render(game.ctx);
       });
