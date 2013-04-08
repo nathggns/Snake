@@ -48,6 +48,8 @@
         this.width = this.height = 50;
 
         this.speed = 2;
+
+        this.direction = ['y', 1];
     };
 
     Player.prototype.init = function() {
@@ -57,20 +59,22 @@
 
     Player.prototype.update = function() {
         if (37 in game.keys) {
-            this.x -= this.speed;
+            this.direction = ['x', -1];
         }
 
         if (39 in game.keys) {
-            this.x += this.speed;
+            this.direction = ['x', 1];
         }
 
         if (38 in game.keys) {
-            this.y -= this.speed;
+            this.direction = ['y', -1];
         }
 
         if (40 in game.keys) {
-            this.y += this.speed;
+            this.direction = ['y', 1];
         }
+
+        this[this.direction[0]] += this.speed * this.direction[1];
 
         if (this.y > (this.game.game.height - this.height)) {
             this.y = this.game.game.height - this.height;
