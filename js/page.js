@@ -5,25 +5,25 @@
     var callee = arguments.callee;
     var me = this;
 
-    return document.addEventListener('DOMContentLoaded', function() {
+    return $(function() {
       Array.prototype.push.call(args, true);
       return callee.apply(me, args);
     });
   }
 
-  var canvas = document.querySelector('#canvas');
+  var canvas = $('#canvas').eq(0);
   var scale = function() {
     var min = document.width > document.height ? document.height : document.width;
 
-    canvas.style.setProperty('width', min + 'px');
-    canvas.style.setProperty('height', min + 'px');
+    canvas.css('width', min + 'px');
+    canvas.css('height', min + 'px');
 
     return scale;
   };
 
-  window.addEventListener('resize', scale());
+  $(window).on('resize', scale());
 
-  var game = new Game(canvas);
+  var game = new Game(canvas[0]);
 
   var size = 14;
 
@@ -72,8 +72,6 @@
     };
 
     Player.prototype.update = function() {
-
-        window.player = this;
 
         var player = this;
         var direction;

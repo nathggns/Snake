@@ -2,6 +2,7 @@ var Game = (function(window, document, undefined) {
 
   var Game = function Game(canvas) {
     this.canvas = canvas;
+    this.$canvas = $(canvas);
     this.objects = [];
     this.ctx = this.canvas.getContext('2d');
     this.game = {};
@@ -42,37 +43,37 @@ var Game = (function(window, document, undefined) {
 
     var handler = function() {
 
-      game.game.width = parseInt(game.canvas.attributes.getNamedItem('width').value, 10);
-      game.game.height = parseInt(game.canvas.attributes.getNamedItem('height').value, 10);
+      game.game.width = parseInt(game.$canvas.attr('width'), 10);
+      game.game.height = parseInt(game.$canvas.attr('height'), 10);
 
       return handler;
     };
 
-   document.addEventListener('resize', handler());
+   $(document).on('resize', handler());
   };
 
   Game.prototype.assignKeyHandler = function() {
-    var canvas = this.canvas;
+    var canvas = this.$canvas;
 
-    if (!canvas.attributes.getNamedItem('tabindex')) {
-      canvas.setAttribute('tabindex', -1);
+    if (!canvas.attr('tabindex')) {
+      canvas.attr('tabindex', -1);
     }
 
     canvas.focus();
 
     var game = this;
 
-    canvas.addEventListener('keydown', function(e) {
+    canvas.on('keydown', function(e) {
       game.keys[e.which] = true;
     });
 
-    canvas.addEventListener('keyup', function(e) {
+    canvas.on('keyup', function(e) {
       while (e.which in game.keys) {
         delete game.keys[e.which];
       }
     });
 
-    canvas.addEventListener('blur', function(e) {
+    canvas.on('blur', function(e) {
       game.keys = {};
     });
   };
