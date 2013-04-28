@@ -35,6 +35,7 @@
     };
 
     Background.prototype.render = function(ctx) {
+
         var color = '#ffffff';
 
         for (var i = 0, l = this.game.game.width / size; i < l; i++) {
@@ -67,11 +68,18 @@
 
         this.speed = 1.5;
         this.direction = ['y', 1, 'height'];
+        this.new_direction = undefined;
         this.movement = 0;
+        this.child = false;
+        this.has_init = false;
+        this.x = this.y = 0;
     };
 
-    Player.prototype.init = function() {
-        this.x = this.y = 0;
+    Player.prototype.turn = function() {
+        if (this.new_direction) {
+            this.direction = this.new_direction;
+            this.new_direction = undefined;
+        }
     };
 
     Player.prototype.update = function() {
@@ -95,16 +103,8 @@
             direction = ['y', 1, 'height'];
         }
 
-        if (direction) {
-            (function() {
-                if (direction[0] === player.direction[0]) return;
-
-                if (player[player.direction[0]] % size === 0) {
-                    player.direction = direction;
-                } else {
-                    player.timer = setTimeout(arguments.callee, 1);
-                }
-            })();
+        if (direction && direction[0] !== this.direction[0]) {
+            this.new_direction = direction;
         }
 
         this.movement += this.speed;
@@ -112,6 +112,7 @@
         if (this.movement >= this[this.direction[2]]) {
             this[this.direction[0]] += this[this.direction[2]] * this.direction[1];
             this.movement = 0;
+            this.turn();
         }
 
         if (this.y > (this.game.game.height - this.height)) {
