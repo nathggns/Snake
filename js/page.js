@@ -70,8 +70,6 @@
         this.direction = ['y', 1, 'height'];
         this.new_direction = undefined;
         this.movement = 0;
-        this.child = false;
-        this.has_init = false;
         this.x = this.y = 0;
     };
 
