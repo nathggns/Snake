@@ -71,6 +71,8 @@
         this.new_direction = undefined;
         this.movement = 0;
         this.x = this.y = 0;
+
+        this.tails = [];
     };
 
     Player.prototype.turn = function() {
@@ -108,6 +110,16 @@
         this.movement += this.speed;
 
         if (this.movement >= this[this.direction[2]]) {
+
+            if (this.tails.length > 0) {
+                this.tails.pop();
+
+                this.tails.unshift({
+                    x: this.x,
+                    y: this.y
+                });
+            }
+
             this[this.direction[0]] += this[this.direction[2]] * this.direction[1];
             this.movement = 0;
             this.turn();
@@ -133,6 +145,17 @@
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.closePath();
         ctx.fill();
+
+        var game = this;
+
+        $.each(this.tails, function() {
+            ctx.beginPath();
+            ctx.fillStyle = '#aaaaaa';
+
+            ctx.rect(this.x, this.y, game.width, game.height);
+            ctx.closePath();
+            ctx.fill();
+        });
     };
 
     return Player;
