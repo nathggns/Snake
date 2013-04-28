@@ -63,8 +63,8 @@
         this.width = this.height = size * 2;
 
         this.speed = 1.5;
-
         this.direction = ['y', 1, 'height'];
+        this.movement = 0;
     };
 
     Player.prototype.init = function() {
@@ -104,7 +104,12 @@
             })();
         }
 
-        this[this.direction[0]] += this.speed * this.direction[1];
+        this.movement += this.speed;
+
+        if (this.movement >= this[this.direction[2]]) {
+            this[this.direction[0]] += this[this.direction[2]] * this.direction[1];
+            this.movement = 0;
+        }
 
         if (this.y > (this.game.game.height - this.height)) {
             this.y = this.game.game.height - this.height;
