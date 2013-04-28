@@ -11,7 +11,8 @@
     });
   }
 
-  var canvas = $('#canvas').eq(0);
+  var canvas = $('#canvas').add('#background-canvas');
+
   var scale = function() {
     var min = document.width > document.height ? document.height : document.width;
 
@@ -23,7 +24,8 @@
 
   $(window).on('resize', scale());
 
-  var game = new Game(canvas[0]);
+  var game = new Game(canvas.filter('#canvas')[0]);
+  var bgame = new Game(canvas.filter('#background-canvas')[0], 2000);
 
   var size = 14;
 
@@ -42,6 +44,7 @@
                 ctx.fillStyle = this.background;
                 ctx.rect(size * i, size * j, size, size);
                 ctx.fillStyle = color;
+                ctx.closePath();
                 ctx.fill();
 
                 if (color === '#ffffff') {
@@ -129,6 +132,7 @@
         ctx.fillStyle = '#aaaaaa';
 
         ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.closePath();
         ctx.fill();
     };
 
@@ -136,7 +140,7 @@
 
   })();
 
-  game.add(new Background());
+  bgame.add(new Background());
   game.add(new Player());
 
 })(this, this.document);

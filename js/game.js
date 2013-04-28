@@ -1,6 +1,6 @@
 var Game = (function(window, document, undefined) {
 
-  var Game = function Game(canvas) {
+  var Game = function Game(canvas, delay) {
     this.canvas = canvas;
     this.$canvas = $(canvas);
     this.objects = [];
@@ -11,6 +11,8 @@ var Game = (function(window, document, undefined) {
     this.assignResizeHandler();
     this.assignKeyHandler();
     this.startLoop();
+
+    this.delay = delay || 16;
   };
 
   Game.prototype.add = function(obj) {
@@ -79,17 +81,12 @@ var Game = (function(window, document, undefined) {
   };
 
   Game.prototype.startLoop = function() {
-    var requestAnimationFrame =
-          window.requestAnimationFrame ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame ||
-          window.msRequestAnimationFrame ||
-          window.oRequestAnimationFrame ||
-          function(callback) {
-            return setTimeout(callback, 16);
-          };
 
     var game = this;
+
+    var requestAnimationFrame = function(cb) {
+      return setTimeout(cb, game.delay);
+    };
 
     var loop = function() {
       game.ctx.clearRect(0, 0, game.game.width, game.game.height);
