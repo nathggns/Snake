@@ -24,8 +24,8 @@
 
   $(window).on('resize', scale());
 
-  var game = new Game(canvas.filter('#canvas')[0]);
   var bgame = new Game(canvas.filter('#background-canvas')[0], 2000);
+  var game = new Game(canvas.filter('#canvas')[0]);
 
   var size = 14;
 
