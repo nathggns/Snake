@@ -249,8 +249,8 @@
         var w_i = width / size;
         var h_i = height / size;
 
-        var w_c = Math.random(0, w_i);
-        var h_c = Math.random(0, h_i);
+        var w_c = Math.random(0, w_i - 1);
+        var h_c = Math.random(0, h_i - 1);
 
         this.x = w_c * size;
         this.y = h_c * size;
