@@ -78,6 +78,80 @@ var Game = (function(window, document, undefined) {
     canvas.on('blur', function(e) {
       game.keys = {};
     });
+
+    var started = false;
+    var time = 0;
+
+    canvas.on('touchstart', function() {
+      started = true;
+      time = 0;
+    });
+
+    canvas.on('touchend', function() {
+      started = false;
+    });
+
+    (function() {
+
+      if (started) {
+        time++;
+
+        if (time > 10) {
+
+          time = 0;
+
+          $.each(game.objects, function(i, obj) {
+            if (obj.touch_hold) {
+              obj.touch_hold();
+            }
+          });
+        }
+      }
+
+      return setTimeout(arguments.callee, 16);
+
+    })();
+
+    canvas.touchwipe({
+      wipeLeft: function() {
+        started = false;
+        $.each(game.objects, function(i, obj) {
+          if (obj.swipe) {
+            obj.swipe('left');
+          }
+        });
+      },
+
+      wipeRight: function() {
+        started = false;
+        $.each(game.objects, function(i, obj) {
+          if (obj.swipe) {
+            obj.swipe('right');
+          }
+        });
+      },
+
+      wipeUp: function() {
+        started = false;
+        $.each(game.objects, function(i, obj) {
+          if (obj.swipe) {
+            obj.swipe('down');
+          }
+        });
+      },
+
+      wipeDown: function() {
+        started = false;
+        $.each(game.objects, function(i, obj) {
+          if (obj.swipe) {
+            obj.swipe('up');
+          }
+        });
+      },
+
+      min_move_x: 20,
+      min_move_y: 20
+    });
   };
 
   Game.prototype.startLoop = function() {

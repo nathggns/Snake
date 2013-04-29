@@ -63,16 +63,22 @@
   var Player = (function() {
 
     var Player = function Player() {
-        this.order = 2;
-        this.width = this.height = 14;
+        this.has_init = false;
+    };
 
-        this.speed = 2;
-        this.direction = ['y', 1, 'height'];
-        this.new_direction = undefined;
-        this.movement = 0;
-        this.x = this.y = 0;
+    Player.prototype.init = function() {
+        if (!this.has_init) {
+            this.order = 2;
+            this.width = this.height = 14;
 
-        this.tails = [];
+            this.speed = 2;
+            this.direction = ['y', 1, 'height'];
+            this.new_direction = undefined;
+            this.movement = 0;
+            this.x = this.y = 0;
+
+            this.tails = [];
+        }
     };
 
     Player.prototype.add_tail = function() {
@@ -141,16 +147,23 @@
         }
 
         if (this.y > (this.game.game.height - this.height)) {
-            this.y = this.game.game.height - this.height;
+            this.init();
         } else if (this.y < 0) {
-            this.y = 0;
+            this.init();
         }
 
         if (this.x < 0) {
-            this.x = 0;
+            this.init();
         } else if (this.x > (this.game.game.width - this.width)) {
-            this.x = this.game.game.width - this.width;
+            this.init();
         }
+
+        $.each(this.tails, function(i, tail) {
+            if (tail.x === player.x && tail.y === player.y) {
+                player.init();
+                return false;
+            }
+        });
     };
 
     Player.prototype.render = function(ctx) {
@@ -172,6 +185,43 @@
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.closePath();
         ctx.fill();
+    };
+
+    Player.prototype.swipe = function(dir) {
+
+        var direction = [];
+
+        switch (dir) {
+            case 'left':
+            case 'right':
+                direction = ['x', null, 'width'];
+            break;
+
+            case 'up':
+            case 'down':
+                direction = ['y', null, 'height'];
+            break;
+        }
+
+        switch (dir) {
+            case 'left':
+            case 'up':
+                direction[1] = -1;
+            break;
+
+            case 'right':
+            case 'down':
+                direction[1] = 1;
+            break;
+        }
+
+        if (direction.length > 0) {
+            this.new_direction = direction;
+        }
+    };
+
+    Player.prototype.touch_hold = function() {
+        this.add_tail();
     };
 
     return Player;
