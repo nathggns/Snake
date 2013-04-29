@@ -82,13 +82,34 @@ var Game = (function(window, document, undefined) {
     var started = false;
     var time = 0;
 
-    canvas.on('touchstart', function() {
-      started = true;
-      time = 0;
+    var $touch = $('.touch-capture');
+
+    $touch.attr('tabindex', -1);
+
+    $touch.focus(function() {
+      canvas.focus();
     });
 
-    canvas.on('touchend', function() {
+    canvas.add($touch).on('touchstart', function(e) {
+
+      started = true;
+      time = 0;
+
+      $.each(game.objects, function(i, obj) {
+        if (obj.touch_start) {
+          obj.touch_start(e);
+        }
+      });
+    });
+
+    canvas.add($touch).on('touchend', function(e) {
       started = false;
+
+      $.each(game.objects, function(i, obj) {
+        if (obj.touch_end) {
+          obj.touch_end(e);
+        }
+      });
     });
 
     (function() {
@@ -112,7 +133,7 @@ var Game = (function(window, document, undefined) {
 
     })();
 
-    canvas.add('.touch-capture').touchwipe({
+    canvas.add($touch).touchwipe({
       wipeLeft: function() {
         started = false;
         $.each(game.objects, function(i, obj) {

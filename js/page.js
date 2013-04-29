@@ -287,14 +287,30 @@
 
             ctx.font = "normal 12px sans-serif";
 
-            ctx.fillText('Press any key to continue', game.game.width / 2, game.game.height / 2 + 40);
+            var string = 'Press the space key to continue';
+
+            if (Modernizr.touch) {
+                string = 'Tap to continue';
+            }
+
+            ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
         }
     };
 
     Death.prototype.update = function() {
-        if (this.dead && Object.keys(game.keys).length > 0) {
-            this.player.init();
-            this.dead = false;
+        if (this.dead && 32 in game.keys) {
+            this.start();
+        }
+    };
+
+    Death.prototype.start = function() {
+        this.player.init();
+        this.dead = false;
+    };
+
+    Death.prototype.touch_start = function() {
+        if (this.dead) {
+            this.start();
         }
     };
 
