@@ -154,23 +154,24 @@
     };
 
     Player.prototype.render = function(ctx) {
+
+        var game = this;
+
+        $.each(this.tails, function() {
+            ctx.beginPath();
+            ctx.fillStyle = '#ff0000';
+
+            ctx.rect(this.x, this.y, game.width, game.height);
+            ctx.closePath();
+            ctx.fill();
+        });
+
         ctx.beginPath();
         ctx.fillStyle = '#aaaaaa';
 
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.closePath();
         ctx.fill();
-
-        var game = this;
-
-        $.each(this.tails, function() {
-            ctx.beginPath();
-            ctx.fillStyle = '#aaaaaa';
-
-            ctx.rect(this.x, this.y, game.width, game.height);
-            ctx.closePath();
-            ctx.fill();
-        });
     };
 
     return Player;
