@@ -123,10 +123,6 @@
             direction = ['y', 1, 'height'];
         }
 
-        if (65 in game.keys) {
-            this.add_tail();
-        }
-
         if (direction && direction[0] !== this.direction[0]) {
             this.new_direction = direction;
         }
@@ -226,10 +222,6 @@
         if (direction.length > 0) {
             this.new_direction = direction;
         }
-    };
-
-    Player.prototype.touch_hold = function() {
-        this.add_tail();
     };
 
     return Player;
