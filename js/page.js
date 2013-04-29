@@ -107,6 +107,22 @@
                 return;
             }
 
+            if (new_direction[0] === 'x') {
+                if (this.x === 0 && new_direction[1] === -1) {
+                    return;
+                } else if (this.x === game.game.width - this.width && new_direction === 1) {
+                    return;
+                }
+            }
+
+            if (new_direction[0] === 'y') {
+                if (this.y === 0 && new_direction[1] === -1) {
+                    return;
+                } else if (this.y === game.game.height - this.height && new_direction === 1) {
+                    return;
+                }
+            }
+
             this.direction = new_direction;
         }
     };
