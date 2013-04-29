@@ -67,6 +67,7 @@
         this.fruit = fruit;
         this.order = 2;
         this.death = death;
+        this.fruit.player = this;
     };
 
     Player.prototype.init = function() {
@@ -80,9 +81,7 @@
             this.x = this.y = 0;
 
             this.tails = [];
-
             this.fruit.init();
-
             this.active = true;
         }
     };
@@ -297,8 +296,46 @@
         var w_i = width / size;
         var h_i = height / size;
 
-        var w_c = Math.random(0, w_i - 1);
-        var h_c = Math.random(0, h_i - 1);
+        var found = true;
+        var w_c;
+        var h_c;
+
+        var f;
+
+        var each_func = function(i, tail) {
+            if (tail.x === w_c * size && tail.y === h_c * size) {
+                f = true;
+                return false;
+            }
+        };
+
+        while (found) {
+
+            f = false;
+
+            w_c = Math.random(0, w_i - 1);
+            h_c = Math.random(0, h_i - 1);
+
+            if (w_c === 0 && h_c === 0 && !this.player) {
+                continue;
+            }
+
+            if (this.player) {
+
+                $.each(this.player.tails, each_func);
+
+                if (!f) {
+                    if (w_c * size === this.player.x && h_c * size === this.player.y) {
+                        f = true;
+                    }
+                }
+
+                found = f;
+
+            } else {
+                found = false;
+            }
+        }
 
         this.x = w_c * size;
         this.y = h_c * size;
