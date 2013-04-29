@@ -64,15 +64,26 @@
 
     var Player = function Player() {
         this.order = 2;
-        this.width = this.height = size * 2;
+        this.width = this.height = 14;
 
-        this.speed = 1.5;
+        this.speed = 2;
         this.direction = ['y', 1, 'height'];
         this.new_direction = undefined;
         this.movement = 0;
         this.x = this.y = 0;
 
         this.tails = [];
+    };
+
+    Player.prototype.add_tail = function() {
+        var tail = {
+            x: this.x,
+            y: this.y
+        };
+
+        this[this.direction[0]] += this[this.direction[2]] * this.direction[1];
+
+        this.tails.unshift(tail);
     };
 
     Player.prototype.turn = function() {
@@ -101,6 +112,10 @@
 
         if (40 in game.keys) {
             direction = ['y', 1, 'height'];
+        }
+
+        if (65 in game.keys) {
+            this.add_tail();
         }
 
         if (direction && direction[0] !== this.direction[0]) {
