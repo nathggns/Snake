@@ -112,7 +112,7 @@ var Game = (function(window, document, undefined) {
 
     })();
 
-    canvas.touchwipe({
+    canvas.add('.touch-capture').touchwipe({
       wipeLeft: function() {
         started = false;
         $.each(game.objects, function(i, obj) {

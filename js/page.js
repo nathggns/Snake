@@ -27,7 +27,7 @@
   var bgame = new Game(canvas.filter('#background-canvas')[0], 2000);
   var game = new Game(canvas.filter('#canvas')[0]);
 
-  var size = 14;
+  var size = 20;
 
   var Background = (function() {
     var Background = function Background() {
@@ -70,7 +70,7 @@
     Player.prototype.init = function() {
         if (!this.has_init) {
             this.order = 2;
-            this.width = this.height = 14;
+            this.width = this.height = size;
 
             this.speed = 2;
             this.direction = ['y', 1, 'height'];
@@ -219,7 +219,7 @@
             break;
         }
 
-        if (direction.length > 0) {
+        if (direction.length > 0 && direction[0] !== this.direction[0]) {
             this.new_direction = direction;
         }
     };
