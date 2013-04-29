@@ -107,20 +107,6 @@
                 return;
             }
 
-            if (new_direction[0] === 'x') {
-                if (this.x === 0 && new_direction[1] === -1) {
-                    return;
-                } else if (this.x === game.game.width - this.width && new_direction === 1) {
-                    return;
-                }
-            } else if (new_direction[0] === 'y') {
-                if (this.y === 0 && new_direction[1] === -1) {
-                    return;
-                } else if (this.y === game.game.height - this.height && new_direction === 1) {
-                    return;
-                }
-            }
-
             this.direction = new_direction;
         }
     };
@@ -171,19 +157,19 @@
         }
 
         if (this.y > (this.game.game.height - this.height)) {
-            this.die();
-            return;
+            this.y = 0;
+            this.direction[1] = 1;
         } else if (this.y < 0) {
-            this.die();
-            return;
+            this.y = this.game.game.height - this.height;
+            this.direction[1] = -1;
         }
 
         if (this.x < 0) {
-            this.die();
-            return;
+            this.x = this.game.game.width - this.width;
+            this.direction[1] = -1;
         } else if (this.x > (this.game.game.width - this.width)) {
-            this.die();
-            return;
+            this.x = 0;
+            this.direction[1] = 1;
         }
 
         if (this.x === this.fruit.x && this.y === this.fruit.y) {
