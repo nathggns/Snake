@@ -99,8 +99,15 @@
 
     Player.prototype.turn = function() {
         if (this.new_direction) {
-            this.direction = this.new_direction;
+
+            var new_direction = this.new_direction;
             this.new_direction = undefined;
+
+            if (new_direction.length < 1 || new_direction[0] === this.direction[0]) {
+                return;
+            }
+
+            this.direction = new_direction;
         }
     };
 
@@ -127,9 +134,7 @@
             direction = ['y', 1, 'height'];
         }
 
-        if (direction && direction[0] !== this.direction[0]) {
-            this.new_direction = direction;
-        }
+        this.new_direction = direction;
 
         this.movement += this.speed;
 
@@ -231,9 +236,7 @@
             break;
         }
 
-        if (direction.length > 0 && direction[0] !== this.direction[0]) {
-            this.new_direction = direction;
-        }
+        this.new_direction = direction;
     };
 
     return Player;
