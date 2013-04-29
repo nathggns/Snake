@@ -62,8 +62,9 @@
 
   var Player = (function() {
 
-    var Player = function Player() {
+    var Player = function Player(fruit) {
         this.has_init = false;
+        this.fruit = fruit;
     };
 
     Player.prototype.init = function() {
@@ -78,6 +79,8 @@
             this.x = this.y = 0;
 
             this.tails = [];
+
+            this.fruit.init();
         }
     };
 
@@ -158,6 +161,11 @@
             this.init();
         }
 
+        if (this.x === this.fruit.x && this.y === this.fruit.y) {
+            this.fruit.init();
+            this.add_tail();
+        }
+
         $.each(this.tails, function(i, tail) {
             if (tail.x === player.x && tail.y === player.y) {
                 player.init();
@@ -228,7 +236,49 @@
 
   })();
 
+  var Fruit = (function() {
+    var Fruit = function Fruit() {
+
+    };
+
+    Fruit.prototype.init = function() {
+        this.exists = true;
+
+        var width = game.game.width;
+        var height = game.game.height;
+        var w_i = width / size;
+        var h_i = height / size;
+
+        var w_c = Math.random(0, w_i);
+        var h_c = Math.random(0, h_i);
+
+        this.x = w_c * size;
+        this.y = h_c * size;
+
+        this.radius = size / 2;
+
+        this.order = 2;
+    };
+
+    Fruit.prototype.render = function(ctx) {
+        if (this.exists) {
+            ctx.beginPath();
+            ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = '#0000ff';
+            ctx.closePath();
+            ctx.fill();
+        }
+    };
+
+    return Fruit;
+
+  })();
+
+  var fruit = new Fruit();
+  var player = new Player(fruit);
+
   bgame.add(new Background());
-  game.add(new Player());
+  game.add(player);
+  game.add(fruit);
 
 })(this, this.document);
