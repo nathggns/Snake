@@ -62,14 +62,15 @@
 
   var Player = (function() {
 
-    var Player = function Player(fruit) {
+    var Player = function Player(fruit, death) {
         this.has_init = false;
         this.fruit = fruit;
+        this.order = 2;
+        this.death = death;
     };
 
     Player.prototype.init = function() {
         if (!this.has_init) {
-            this.order = 2;
             this.width = this.height = size;
 
             this.speed = 2;
@@ -81,6 +82,8 @@
             this.tails = [];
 
             this.fruit.init();
+
+            this.active = true;
         }
     };
 
@@ -103,6 +106,8 @@
     };
 
     Player.prototype.update = function() {
+
+        if (!this.active) return;
 
         var player = this;
         var direction;
@@ -146,15 +151,19 @@
         }
 
         if (this.y > (this.game.game.height - this.height)) {
-            this.init();
+            this.die();
+            return;
         } else if (this.y < 0) {
-            this.init();
+            this.die();
+            return;
         }
 
         if (this.x < 0) {
-            this.init();
+            this.die();
+            return;
         } else if (this.x > (this.game.game.width - this.width)) {
-            this.init();
+            this.die();
+            return;
         }
 
         if (this.x === this.fruit.x && this.y === this.fruit.y) {
@@ -164,10 +173,14 @@
 
         $.each(this.tails, function(i, tail) {
             if (tail.x === player.x && tail.y === player.y) {
-                player.init();
+                player.die();
                 return false;
             }
         });
+    };
+
+    Player.prototype.die = function() {
+        return this.death.die(this);
     };
 
     Player.prototype.render = function(ctx) {
@@ -228,9 +241,42 @@
 
   })();
 
+  var Death = (function() {
+
+    var Death = function Death() {
+        this.dead = false;
+        this.order = 5;
+    };
+
+    Death.prototype.die = function(player) {
+        this.player = player;
+        this.player.active = false;
+        this.dead = true;
+    };
+
+    Death.prototype.render = function(ctx) {
+        if (this.dead) {
+            ctx.beginPath();
+            ctx.fillStyle = '#000000';
+            ctx.rect(0, 0, game.game.width, game.game.height);
+            ctx.fill();
+        }
+    };
+
+    Death.prototype.update = function() {
+        if (this.dead && Object.keys(game.keys).length > 0) {
+            this.player.init();
+            this.dead = false;
+        }
+    };
+
+    return Death;
+
+  })();
+
   var Fruit = (function() {
     var Fruit = function Fruit() {
-
+        this.order = 2;
     };
 
     Fruit.prototype.init = function() {
@@ -248,8 +294,6 @@
         this.y = h_c * size;
 
         this.radius = size / 2;
-
-        this.order = 2;
     };
 
     Fruit.prototype.render = function(ctx) {
@@ -267,10 +311,12 @@
   })();
 
   var fruit = new Fruit();
-  var player = new Player(fruit);
+  var death = new Death();
+  var player = new Player(fruit, death);
 
   bgame.add(new Background());
   game.add(player);
   game.add(fruit);
+  game.add(death);
 
 })(this, this.document);
