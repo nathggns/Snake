@@ -260,6 +260,16 @@
             ctx.fillStyle = '#000000';
             ctx.rect(0, 0, game.game.width, game.game.height);
             ctx.fill();
+
+            ctx.font = "bold 20px sans-serif";
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('You died', game.game.width / 2, game.game.height / 2);
+
+            ctx.font = "normal 12px sans-serif";
+
+            ctx.fillText('Press any key to continue', game.game.width / 2, game.game.height / 2 + 40);
         }
     };
 
