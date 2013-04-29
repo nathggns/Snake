@@ -113,9 +113,7 @@
                 } else if (this.x === game.game.width - this.width && new_direction === 1) {
                     return;
                 }
-            }
-
-            if (new_direction[0] === 'y') {
+            } else if (new_direction[0] === 'y') {
                 if (this.y === 0 && new_direction[1] === -1) {
                     return;
                 } else if (this.y === game.game.height - this.height && new_direction === 1) {
@@ -150,7 +148,9 @@
             direction = ['y', 1, 'height'];
         }
 
-        this.new_direction = direction;
+        if (direction) {
+            this.new_direction = direction;
+        }
 
         this.movement += this.speed;
 
@@ -252,7 +252,9 @@
             break;
         }
 
-        this.new_direction = direction;
+        if (direction.length > 0 && direction[1]) {
+            this.new_direction = direction;
+        }
     };
 
     return Player;
