@@ -1,13 +1,10 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
+
+require('./pid').create();
 
 var app = express();
 
@@ -15,8 +12,6 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 // all environments
-
-
 app.configure('development', function() {
     app.use(express.errorHandler());
      app.use(express.logger('dev'));
