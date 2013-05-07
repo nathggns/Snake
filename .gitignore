@@ -1,3 +1,5 @@
 .DS_Store
 *.sublime-*
 .sass-cache
+*.css
+node_modules

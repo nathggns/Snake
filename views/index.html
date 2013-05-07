@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake</title>
+
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/jquery.swipe.js"></script>
+    <script src="/javascripts/modernizr.js"></script>
+    <script src="/javascripts/util.js"></script>
+
+
+    <!--[if lt IE 9]>
+        <script src="/javascripts/ie/flashcanvas.js"></script>
+        <script src="/javascripts/ie/es5.js"></script>
+        <script src="/javascripts/ie/ie.js"></script>
+
+    <![endif]-->
+
+    <script src="/javascripts/game.js"></script>
+    <script src="/javascripts/page.js"></script>
+</head>
+<body>
+
+    <div class="touch-capture"></div>
+
+    <canvas id="background-canvas" class="game fixed middle center" width="300" height="300"></canvas>
+    <canvas id="canvas" class="game fixed middle center" width="300" height="300"></canvas>
+</body>
+</html>

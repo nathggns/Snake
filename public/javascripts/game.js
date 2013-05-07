@@ -8,6 +8,14 @@ var Game = (function(window, document, undefined) {
     this.game = {};
     this.keys = {};
 
+
+    this.resolution = 1;
+
+    this.defaults = {
+      width: canvas.width,
+      height: canvas.height
+    };
+
     this.assignResizeHandler();
     this.assignKeyHandler();
     this.startLoop();
@@ -48,10 +56,28 @@ var Game = (function(window, document, undefined) {
       game.game.width = parseInt(game.$canvas.attr('width'), 10);
       game.game.height = parseInt(game.$canvas.attr('height'), 10);
 
+      game.resolution = game.game.width / game.defaults.width;
+
+      game.canvas.width = game.game.width;
+      game.canvas.height = game.game.height;
+
+      game.render();
+
       return handler;
     };
 
    $(document).on('resize', handler());
+  };
+
+  Game.prototype.render = function(update) {
+    this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+
+    var game = this;
+
+    this.objects.forEach(function(object) {
+      if (update && object.update) object.update(game.ctx);
+      object.render(game.ctx);
+    });
   };
 
   Game.prototype.assignKeyHandler = function() {
@@ -184,12 +210,7 @@ var Game = (function(window, document, undefined) {
     };
 
     var loop = function() {
-      game.ctx.clearRect(0, 0, game.game.width, game.game.height);
-
-      game.objects.forEach(function(object) {
-        if (object.update) object.update(game.ctx);
-        object.render(game.ctx);
-      });
+      game.render(true);
 
       return requestAnimationFrame(loop);
     };
