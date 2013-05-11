@@ -220,7 +220,7 @@ var Game = (function(window, document, undefined) {
 
           $.each(game.objects, function(i, obj) {
             if ((!game.paused || obj.update_when_paused) && obj.emit) {
-              if (!obj.bounds || e.within(obj.bounds)) {
+              if (!obj.get_bounds || e.within(obj.get_bounds())) {
                 obj.emit(name, e);
               }
             }

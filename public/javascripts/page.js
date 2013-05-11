@@ -484,8 +484,10 @@
 
         this.x = game.game.width - this.width - (size / 2);
         this.y = game.game.height - this.height - (size / 2);
+    };
 
-        this.bounds = {
+    Button.prototype.get_bounds = function() {
+        return {
             x: this.x,
             y: this.y,
             width: this.width,
@@ -511,9 +513,11 @@
 
     PauseButton.inherit(Button);
 
-    PauseButton.prototype.init = function(game) {
+    PauseButton.prototype.init = function() {
 
         Button.prototype.init.apply(this, arguments);
+
+        var game = this.game;
 
         this.on('click', function() {
             game.pause();
