@@ -444,15 +444,65 @@
     return Pause;
   })();
 
+  var PauseButton = (function() {
+    var PauseButton = function PauseButton(game) {
+        this.order = 99;
+
+        this.width = this.height = 30;
+
+        this.x = game.game.width - this.width - 10;
+        this.y = game.game.height - this.height - 10;
+
+        this.bounds = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+
+        this.on('click', function(e) {
+            game.pause();
+        });
+    };
+
+    PauseButton.prototype.render = function(ctx) {
+
+        if (this.game.paused) return;
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0, 0, 0, .5)';
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+
+        ctx.rect(this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        ctx.fill();
+
+        ctx.rect(this.x + this.width - (this.width / 6) - (this.width / 4), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        ctx.fill();
+
+        ctx.closePath();
+    };
+
+    PauseButton.inherit(GameObject);
+
+    return PauseButton;
+  })();
+
   var fruit = new Fruit();
   var death = new Death();
   var player = new Player(fruit, death);
   var pause = new Pause();
+
+
 
   bgame.add(new Background());
   game.add(player);
   game.add(fruit);
   game.add(death);
   game.add(pause);
+  game.add(PauseButton);
 
 })(this, this.document);
