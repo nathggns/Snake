@@ -474,16 +474,25 @@
 
         ctx.beginPath();
         ctx.fillStyle = 'rgba(0, 0, 0, .5)';
-        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
         ctx.fill();
 
         ctx.beginPath();
         ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
-        ctx.rect(this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        var args = [this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3)];
+        var me = this;
+
+        $.each(args, function(i, arg) {
+            args[i] = me.unit(arg);
+        });
+
+        ctx.rect.apply(ctx, args);
         ctx.fill();
 
-        ctx.rect(this.x + this.width - (this.width / 6) - (this.width / 4), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        args[0] = this.unit(this.x + this.width - (this.width / 6) - (this.width / 4));
+
+        ctx.rect.apply(ctx, args);
         ctx.fill();
 
         ctx.closePath();
