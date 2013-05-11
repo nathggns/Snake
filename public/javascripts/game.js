@@ -86,7 +86,7 @@ var Game = (function(window, document, undefined) {
       return handler;
     };
 
-   $(document).on('resize', handler());
+   $(window).on('resize', handler());
   };
 
   Game.prototype.render = function(update) {
