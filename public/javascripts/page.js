@@ -258,7 +258,7 @@
 
     var Death = function Death() {
         this.dead = false;
-        this.order = 5;
+        this.order = 99;
     };
 
     Death.prototype.die = function(player) {
@@ -446,7 +446,7 @@
 
   var PauseButton = (function() {
     var PauseButton = function PauseButton(game) {
-        this.order = 99;
+        this.order = 98;
 
         this.width = this.height = 30;
 
