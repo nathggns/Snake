@@ -164,7 +164,7 @@
             this.turn();
         }
 
-        if (this.y > (this.game.game.height - this.height)) {
+        if (this.y > this.game.game.height - this.height) {
             this.y = 0;
             this.direction[1] = 1;
         } else if (this.y < 0) {
@@ -175,7 +175,7 @@
         if (this.x < 0) {
             this.x = this.game.game.width - this.width;
             this.direction[1] = -1;
-        } else if (this.x > (this.game.game.width - this.width)) {
+        } else if (this.x > this.game.game.width - this.width) {
             this.x = 0;
             this.direction[1] = 1;
         }
@@ -205,7 +205,7 @@
             ctx.beginPath();
             ctx.fillStyle = '#ff0000';
 
-            ctx.rect(this.x, this.y, game.width, game.height);
+            ctx.rect(game.unit(this.x), game.unit(this.y), game.unit(game.width), game.unit(game.height));
             ctx.closePath();
             ctx.fill();
         });
