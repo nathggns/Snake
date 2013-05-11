@@ -152,7 +152,7 @@ var Game = (function(window, document, undefined) {
   };
 
   Game.prototype.render = function(update) {
-    this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+    this.ctx.clearRect(0, 0, this.game.width * this.resolution, this.game.height * this.resolution);
 
     var game = this;
     var paused = this.paused;
