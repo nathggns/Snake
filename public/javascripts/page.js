@@ -544,8 +544,6 @@
   var player = new Player(fruit, death);
   var pause = new Pause();
 
-
-
   bgame.add(new Background());
   game.add(player);
   game.add(fruit);
