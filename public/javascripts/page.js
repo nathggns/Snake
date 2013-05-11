@@ -462,7 +462,7 @@
 
   var Button = (function() {
     var Button = function(game){
-        this.order = 98;
+        this.order = 99;
 
         this.width = this.height = size;
 
@@ -494,26 +494,20 @@
   var PauseButton = (function() {
 
     var PauseButton = function PauseButton(game) {
-        this.order = 98;
-
-        this.width = this.height = size;
-
-        this.x = game.game.width - this.width - (size / 2);
-        this.y = game.game.height - this.height - (size / 2);
-
-        this.bounds = {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height
-        };
-
-        this.on('click', function(e) {
-            game.pause();
-        });
+        return Button.call(this, game);
     };
 
     PauseButton.inherit(Button);
+
+        this.x = game.game.width - this.width - (size / 2);
+    PauseButton.prototype.b_init = function(game) {
+
+        this.order = 98;
+
+        this.on('click', function() {
+            game.pause();
+        });
+    };
 
     PauseButton.prototype.render = function(ctx) {
 
@@ -545,7 +539,6 @@
     return PauseButton;
   })();
 
-  console.log(PauseButton.prototype);
 
   var fruit = new Fruit();
   var death = new Death();
