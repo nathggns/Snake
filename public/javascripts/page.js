@@ -455,7 +455,39 @@
     return Pause;
   })();
 
+  var Button = (function() {
+    var Button = function(game){
+        this.order = 98;
+
+        this.width = this.height = size;
+
+        this.x = game.game.width - this.width - (size / 2);
+        this.y = game.game.height - this.height - (size / 2);
+
+        if (this.b_init) this.b_init(game);
+
+        this.bounds = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+    };
+
+    Button.inherit(GameObject);
+
+    Button.prototype.render = function(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0, 0, 0, .5)';
+        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
+        ctx.fill();
+    };
+
+    return Button;
+  })();
+
   var PauseButton = (function() {
+
     var PauseButton = function PauseButton(game) {
         this.order = 98;
 
@@ -476,17 +508,16 @@
         });
     };
 
+    PauseButton.inherit(Button);
+
     PauseButton.prototype.render = function(ctx) {
 
         if (this.game.paused) return;
 
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(0, 0, 0, .5)';
-        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
-        ctx.fill();
+        Button.prototype.render.call(this, ctx);
 
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+        ctx.fillStyle = '#fff';
 
         var args = [this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3)];
         var me = this;
@@ -505,8 +536,6 @@
 
         ctx.closePath();
     };
-
-    PauseButton.inherit(GameObject);
 
     return PauseButton;
   })();
