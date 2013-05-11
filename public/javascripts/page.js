@@ -201,21 +201,22 @@
 
         var game = this;
 
+        ctx.beginPath();
+        ctx.fillStyle = '#aaaaaa';
+
+        ctx.rect(Math.floor(this.unit(this.x)), Math.floor(this.unit(this.y)), Math.ceil(this.unit(this.width)), Math.ceil(this.unit(this.height)));
+        ctx.closePath();
+        ctx.fill();
+
+        
         $.each(this.tails, function() {
             ctx.beginPath();
             ctx.fillStyle = '#ff0000';
 
-            ctx.rect(game.unit(this.x), game.unit(this.y), game.unit(game.width), game.unit(game.height));
+            ctx.rect(Math.floor(game.unit(this.x)), Math.floor(game.unit(this.y)), Math.ceil(game.unit(game.width)), Math.ceil(game.unit(game.height)));
             ctx.closePath();
             ctx.fill();
         });
-
-        ctx.beginPath();
-        ctx.fillStyle = '#aaaaaa';
-
-        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
-        ctx.closePath();
-        ctx.fill();
     };
 
     Player.prototype.swipe = function(dir) {
