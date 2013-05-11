@@ -513,7 +513,7 @@
 
         if (this.game.paused) return;
 
-        Button.prototype.render.call(this, arguments);
+        Button.prototype.render.apply(this, arguments);
 
         ctx.beginPath();
         ctx.fillStyle = '#fff';
