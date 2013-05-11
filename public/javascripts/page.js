@@ -499,7 +499,6 @@
 
     PauseButton.inherit(Button);
 
-        this.x = game.game.width - this.width - (size / 2);
     PauseButton.prototype.b_init = function(game) {
 
         this.order = 98;
