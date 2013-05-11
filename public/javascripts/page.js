@@ -27,8 +27,7 @@
 
   $(window).on('resize', scale());
 
-  // Background is costly to draw. We never want to redraw automatically. 
-  var bgame = new Game(canvas.filter('#background-canvas')[0], 9007199254740992, true, 15);
+  var bgame = new Game(canvas.filter('#background-canvas')[0], 20000, true, 15);
 
   var game = new Game(canvas.filter('#canvas')[0], 16, true);
 
