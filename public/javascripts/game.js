@@ -1,3 +1,9 @@
+var GameObject = (function(window, document, undefined) {
+  var GameObject = function(){};
+  GameObject.inherit(EventEmitter);
+  return GameObject;
+})();
+
 var Game = (function(window, document, undefined) {
 
   var Game = function Game(canvas, delay) {
