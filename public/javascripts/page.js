@@ -5,7 +5,7 @@
     var callee = arguments.callee;
     var me = this;
 
-    return $(function() {
+    return $(window).load(function() {
       Array.prototype.push.call(args, true);
       return callee.apply(me, args);
     });
