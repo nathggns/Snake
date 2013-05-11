@@ -27,8 +27,10 @@
 
   $(window).on('resize', scale());
 
-  var bgame = new Game(canvas.filter('#background-canvas')[0], 2000);
-  var game = new Game(canvas.filter('#canvas')[0]);
+  // Background is costly to draw. We never want to redraw automatically. 
+  var bgame = new Game(canvas.filter('#background-canvas')[0], 9007199254740992, true, 15);
+
+  var game = new Game(canvas.filter('#canvas')[0], 16, true);
 
   var size = 20;
 
@@ -40,13 +42,14 @@
     Background.prototype.render = function(ctx) {
 
         var color = '#ffffff';
+        var real_size = this.unit(size);
 
         for (var i = 0, l = this.game.game.width / size; i < l; i++) {
 
             for (j = 0, k = this.game.game.height / size; j < k; j++) {
                 ctx.beginPath();
                 ctx.fillStyle = this.background;
-                ctx.rect(size * i, size * j, size, size);
+                ctx.rect(real_size * i, real_size * j, real_size, real_size);
                 ctx.fillStyle = color;
                 ctx.closePath();
                 ctx.fill();
@@ -161,7 +164,7 @@
             this.turn();
         }
 
-        if (this.y > (this.game.game.height - this.height)) {
+        if (this.y > this.game.game.height - this.height) {
             this.y = 0;
             this.direction[1] = 1;
         } else if (this.y < 0) {
@@ -172,7 +175,7 @@
         if (this.x < 0) {
             this.x = this.game.game.width - this.width;
             this.direction[1] = -1;
-        } else if (this.x > (this.game.game.width - this.width)) {
+        } else if (this.x > this.game.game.width - this.width) {
             this.x = 0;
             this.direction[1] = 1;
         }
@@ -198,21 +201,22 @@
 
         var game = this;
 
+        ctx.beginPath();
+        ctx.fillStyle = '#aaaaaa';
+
+        ctx.rect(Math.floor(this.unit(this.x)), Math.floor(this.unit(this.y)), Math.ceil(this.unit(this.width)), Math.ceil(this.unit(this.height)));
+        ctx.closePath();
+        ctx.fill();
+
+        
         $.each(this.tails, function() {
             ctx.beginPath();
             ctx.fillStyle = '#ff0000';
 
-            ctx.rect(this.x, this.y, game.width, game.height);
+            ctx.rect(Math.floor(game.unit(this.x)), Math.floor(game.unit(this.y)), Math.ceil(game.unit(game.width)), Math.ceil(game.unit(game.height)));
             ctx.closePath();
             ctx.fill();
         });
-
-        ctx.beginPath();
-        ctx.fillStyle = '#aaaaaa';
-
-        ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.closePath();
-        ctx.fill();
     };
 
     Player.prototype.swipe = function(dir) {
@@ -271,16 +275,16 @@
         if (this.dead) {
             ctx.beginPath();
             ctx.fillStyle = '#000000';
-            ctx.rect(0, 0, game.game.width, game.game.height);
+            ctx.rect(0, 0, this.unit(game.game.width), this.unit(game.game.height));
             ctx.fill();
 
-            ctx.font = "bold 20px sans-serif";
+            ctx.font = "bold " + this.unit(20) + "px sans-serif";
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('You died', game.game.width / 2, game.game.height / 2);
+            ctx.fillText('You died', this.unit(game.game.width / 2), this.unit(game.game.height / 2));
 
-            ctx.font = "normal 12px sans-serif";
+            ctx.font = "normal " + this.unit(12) + "px sans-serif";
 
             var string = 'Press the space key to continue';
 
@@ -288,7 +292,7 @@
                 string = 'Tap to continue';
             }
 
-            ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
+            ctx.fillText(string, this.unit(game.game.width / 2), this.unit(game.game.height / 2 + 40));
         }
     };
 
@@ -378,7 +382,7 @@
     Fruit.prototype.render = function(ctx) {
         if (this.exists) {
             ctx.beginPath();
-            ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, 2 * Math.PI, false);
+            ctx.arc(this.unit(this.x + this.radius), this.unit(this.y + this.radius), this.unit(this.radius), 0, 2 * Math.PI, false);
             ctx.fillStyle = '#0000ff';
             ctx.closePath();
             ctx.fill();
@@ -418,16 +422,16 @@
 
             ctx.beginPath();
             ctx.fillStyle = '#000000';
-            ctx.rect(0, 0, game.game.width, game.game.height);
+            ctx.rect(0, 0, this.unit(game.game.width), this.unit(game.game.height));
             ctx.fill();
 
-            ctx.font = "bold 20px sans-serif";
+            ctx.font = "bold " + this.unit(20) + "px sans-serif";
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('Game is paused', game.game.width / 2, game.game.height / 2);
+            ctx.fillText('Game is paused', this.unit(game.game.width / 2), this.unit(game.game.height / 2));
 
-            ctx.font = "normal 12px sans-serif";
+            ctx.font = "normal " + this.unit(12) + "px sans-serif";
 
             var string = 'Press the space key to continue';
 
@@ -435,7 +439,7 @@
                 string = 'Tap to continue';
             }
 
-            ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
+            ctx.fillText(string, this.unit(game.game.width / 2), this.unit(game.game.height / 2 + 40));
         }
     };
 
@@ -471,16 +475,25 @@
 
         ctx.beginPath();
         ctx.fillStyle = 'rgba(0, 0, 0, .5)';
-        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
         ctx.fill();
 
         ctx.beginPath();
         ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
-        ctx.rect(this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        var args = [this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3)];
+        var me = this;
+
+        $.each(args, function(i, arg) {
+            args[i] = me.unit(arg);
+        });
+
+        ctx.rect.apply(ctx, args);
         ctx.fill();
 
-        ctx.rect(this.x + this.width - (this.width / 6) - (this.width / 4), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        args[0] = this.unit(this.x + this.width - (this.width / 6) - (this.width / 4));
+
+        ctx.rect.apply(ctx, args);
         ctx.fill();
 
         ctx.closePath();
