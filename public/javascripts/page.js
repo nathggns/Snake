@@ -451,10 +451,10 @@
     var PauseButton = function PauseButton(game) {
         this.order = 98;
 
-        this.width = this.height = 30;
+        this.width = this.height = size;
 
-        this.x = game.game.width - this.width - 10;
-        this.y = game.game.height - this.height - 10;
+        this.x = game.game.width - this.width - (size / 2);
+        this.y = game.game.height - this.height - (size / 2);
 
         this.bounds = {
             x: this.x,
