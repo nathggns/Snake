@@ -23,6 +23,8 @@ var Game = (function(window, document, undefined) {
     this.delay = delay || 16;
   };
 
+  Game.inherit(EventEmitter);
+
   Game.prototype.add = function(obj) {
 
     if (typeof obj === 'function') {
@@ -106,6 +108,7 @@ var Game = (function(window, document, undefined) {
 
     canvas.on('keydown', function(e) {
       game.keys[e.which] = true;
+      game.emit('key', e.which);
     });
 
     canvas.on('keyup', function(e) {
@@ -129,6 +132,18 @@ var Game = (function(window, document, undefined) {
       canvas.focus();
     });
 
+    $touch.on('click', function(e) {
+      game.emit('click', e);
+    });
+
+    $touch.on('mousedown', function(e) {
+      game.emit('mousedown', e);
+    });
+
+    $touch.on('mouseup', function(e) {
+      game.emit('mouseup', e);
+    });
+
     canvas.add($touch).on('touchstart', function(e) {
 
       started = true;
@@ -139,6 +154,8 @@ var Game = (function(window, document, undefined) {
           obj.touch_start(e);
         }
       });
+
+      game.emit('touchstart', e);
     });
 
     canvas.add($touch).on('touchend', function(e) {
@@ -149,6 +166,8 @@ var Game = (function(window, document, undefined) {
           obj.touch_end(e);
         }
       });
+
+      game.emit('touchend', e);
     });
 
     (function() {
@@ -165,6 +184,8 @@ var Game = (function(window, document, undefined) {
               obj.touch_hold();
             }
           });
+
+          game.emit('touchhold', e);
         }
       }
 
@@ -180,6 +201,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('left');
           }
         });
+
+        game.emit('swipe', 'left');
       },
 
       wipeRight: function() {
@@ -189,6 +212,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('right');
           }
         });
+
+        game.emit('swipe', 'right');
       },
 
       wipeUp: function() {
@@ -198,6 +223,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('down');
           }
         });
+
+        game.emit('swipe', 'down');
       },
 
       wipeDown: function() {
@@ -207,6 +234,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('up');
           }
         });
+
+        game.emit('swipe', 'up');
       },
 
       min_move_x: 20,
