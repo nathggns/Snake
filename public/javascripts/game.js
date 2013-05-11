@@ -70,7 +70,7 @@ var Game = (function(window, document, undefined) {
       game.game.width = parseInt(game.$canvas.attr('width'), 10);
       game.game.height = parseInt(game.$canvas.attr('height'), 10);
 
-      game.resolution = game.game.width / game.defaults.width;
+      game.resolution = parseInt(game.$canvas.css('width'), 10) / game.defaults.width;
 
       game.canvas.width = game.game.width;
       game.canvas.height = game.game.height;
