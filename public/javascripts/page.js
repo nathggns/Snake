@@ -45,6 +45,8 @@
     background: $('.background-sound')[0]
   };
 
+  sounds.background.volume = 0.1;
+
   var images = {
     sound: $('.sound')[0],
     mute: $('.sound-mute')[0]
