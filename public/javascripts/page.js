@@ -27,7 +27,8 @@
 
   $(window).on('resize', scale());
 
-  var bgame = new Game(canvas.filter('#background-canvas')[0], 2000);
+  var bgame = new Game(canvas.filter('#background-canvas')[0], 2000, true, 15);
+
   var game = new Game(canvas.filter('#canvas')[0]);
 
   var size = 20;
@@ -40,13 +41,14 @@
     Background.prototype.render = function(ctx) {
 
         var color = '#ffffff';
+        var real_size = this.unit(size);
 
         for (var i = 0, l = this.game.game.width / size; i < l; i++) {
 
             for (j = 0, k = this.game.game.height / size; j < k; j++) {
                 ctx.beginPath();
                 ctx.fillStyle = this.background;
-                ctx.rect(size * i, size * j, size, size);
+                ctx.rect(real_size * i, real_size * j, real_size, real_size);
                 ctx.fillStyle = color;
                 ctx.closePath();
                 ctx.fill();
