@@ -505,4 +505,8 @@
   game.add(pause);
   game.add(PauseButton);
 
+  $(window).on('blur', function() {
+    game.pause();
+  });
+
 })(this, this.document);
