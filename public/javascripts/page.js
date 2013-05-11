@@ -469,7 +469,7 @@
         this.x = game.game.width - this.width - (size / 2);
         this.y = game.game.height - this.height - (size / 2);
 
-        if (this.b_init) this.b_init(game);
+        if (this.b_init) this.apply(this, arguments);
 
         this.bounds = {
             x: this.x,
@@ -493,8 +493,8 @@
 
   var PauseButton = (function() {
 
-    var PauseButton = function PauseButton(game) {
-        return Button.call(this, game);
+    var PauseButton = function PauseButton() {
+        return Button.apply(this, arguments);
     };
 
     PauseButton.inherit(Button);
