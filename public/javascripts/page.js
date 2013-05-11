@@ -381,7 +381,7 @@
     Fruit.prototype.render = function(ctx) {
         if (this.exists) {
             ctx.beginPath();
-            ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, 2 * Math.PI, false);
+            ctx.arc(this.unit(this.x + this.radius), this.unit(this.y + this.radius), this.unit(this.radius), 0, 2 * Math.PI, false);
             ctx.fillStyle = '#0000ff';
             ctx.closePath();
             ctx.fill();
