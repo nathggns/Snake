@@ -1,10 +1,48 @@
 var GameObject = (function(window, document, undefined) {
   var GameObject = function(){};
+
   GameObject.inherit(EventEmitter);
+
   return GameObject;
 })();
 
 var Game = (function(window, document, undefined) {
+
+  var GameEvent = function GameEvent(game, e, pos) {
+    this.x = e.pageX - pos.left;
+    this.y = e.pageY - pos.top;
+
+    this.x /= game.resolution;
+    this.y /= game.resolution;
+
+    this.e = e;
+    this.pos = pos;
+    this.game = game;
+  };
+
+  GameEvent.prototype.bounds = function(bounds) {
+    if (typeof bounds !== 'object') {
+      bounds = {
+        x: arguments[0],
+        y: arguments[1],
+        width: arguments[2],
+        height: arguments[3]
+      };
+    }
+
+    bounds.tl = [bounds.x, bounds.y];
+    bounds.tr = [bounds.x + bounds.width, bounds.y];
+    bounds.bl = [bounds.x, bounds.y + bounds.height];
+    bounds.br = [bounds.x + bounds.width, bounds.y + bounds.height];
+
+    return bounds;
+  };
+
+  GameEvent.prototype.within = function() {
+    var bounds = this.bounds.apply(this, arguments);
+
+    return this.x >= bounds.tl[0] && this.x <= bounds.tr[0] && this.y >= bounds.tl[1] && this.y <= bounds.bl[1];
+  };
 
   var Game = function Game(canvas, delay) {
     this.canvas = canvas;
@@ -138,19 +176,28 @@ var Game = (function(window, document, undefined) {
       canvas.focus();
     });
 
-    $touch.on('click', function(e) {
-      game.emit('click', e);
+    var $both = canvas.add($touch);
+
+    $.each([{
+      object: $touch,
+      events: ['click', 'mousedown', 'mouseup']
+    }, {
+      object: $both,
+      events: ['touchstart', 'touchend']
+    }], function(i, obj) {
+
+      $.each(obj.events, function(i, name) {
+        obj.object.on(name, function(e) {
+          var pos = canvas.offset();
+
+          e = new GameEvent(game, e, pos);
+
+          game.emit(name, e);
+        });
+      });
     });
 
-    $touch.on('mousedown', function(e) {
-      game.emit('mousedown', e);
-    });
-
-    $touch.on('mouseup', function(e) {
-      game.emit('mouseup', e);
-    });
-
-    canvas.add($touch).on('touchstart', function(e) {
+    $both.on('touchstart', function(e) {
 
       started = true;
       time = 0;
@@ -160,11 +207,9 @@ var Game = (function(window, document, undefined) {
           obj.touch_start(e);
         }
       });
-
-      game.emit('touchstart', e);
     });
 
-    canvas.add($touch).on('touchend', function(e) {
+    $both.on('touchend', function(e) {
       started = false;
 
       $.each(game.objects, function(i, obj) {
@@ -172,8 +217,6 @@ var Game = (function(window, document, undefined) {
           obj.touch_end(e);
         }
       });
-
-      game.emit('touchend', e);
     });
 
     (function() {
@@ -190,8 +233,6 @@ var Game = (function(window, document, undefined) {
               obj.touch_hold();
             }
           });
-
-          game.emit('touchhold', e);
         }
       }
 
@@ -199,7 +240,7 @@ var Game = (function(window, document, undefined) {
 
     })();
 
-    canvas.add($touch).touchwipe({
+    $both.touchwipe({
       wipeLeft: function() {
         started = false;
         $.each(game.objects, function(i, obj) {
