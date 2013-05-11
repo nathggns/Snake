@@ -11,6 +11,14 @@
     });
   }
 
+  if (!window.sessionStorage) {
+    window.sessionStorage = {};
+  }
+
+  if (typeof sessionStorage.mute === 'undefined') {
+    sessionStorage.mute = 'false';
+  }
+
   var canvas = $('#canvas').add('#background-canvas');
 
   var scale = function() {
@@ -28,9 +36,7 @@
   $(window).on('resize', scale());
 
   var bgame = new Game(canvas.filter('#background-canvas')[0], 20000, true, 15);
-
   var game = new Game(canvas.filter('#canvas')[0], 16, true);
-
   var size = 20;
 
   var sounds = {
@@ -539,6 +545,81 @@
     return PauseButton;
   })();
 
+  var SoundButton = (function() {
+    var SoundButton = function() {
+        Button.apply(this, arguments);
+
+        this.update_when_paused = true;
+    };
+
+    SoundButton.inherit(Button);
+
+    SoundButton.prototype.b_init = function(game) {
+
+        this.x -= this.width + (size / 2);
+
+        var g = this;
+
+        this.on('click', function() {
+            g.toggle_sound();
+        });
+
+        this.timer = 30;
+    };
+
+    SoundButton.prototype.toggle_sound = function(update_storage) {
+        if (sounds.background.paused) {
+            sounds.background.play();
+            if (!update_storage) sessionStorage.mute = 'false';
+        } else {
+            sounds.background.pause();
+            if (!update_storage) sessionStorage.mute = 'true';
+        }
+    };
+
+    SoundButton.prototype.update = function() {
+        if (this.timer >= 30 && 77 in game.keys || 83 in game.keys) {
+            this.toggle_sound();
+            this.timer = 0;
+        }
+
+        if (sessionStorage.mute === 'true' && !sounds.background.paused) {
+            this.toggle_sound(true);
+        }
+
+        if (this.game.paused && !sounds.background.paused) {
+            this.toggle_sound(true);
+            this.muted_for_pause = true;
+        }
+
+        if (this.muted_for_pause && !this.game.paused) {
+            this.toggle_sound(true);
+            this.muted_for_pause = false;
+        }
+
+        this.timer++;
+    };
+
+    SoundButton.prototype.render = function(ctx) {
+
+        if (this.game.paused) return;
+
+        Button.prototype.render.apply(this, arguments);
+
+        var args = [this.x + (this.width / 6), this.y + (this.height / 6), this.width - (this.width / 3), this.height - (this.height / 3)];
+        var me = this;
+
+        $.each(args, function(i, arg) {
+            args[i] = me.unit(arg);
+        });
+
+        args.unshift(sounds.background.paused ? images.mute : images.sound);
+
+        ctx.drawImage.apply(ctx, args);
+    };
+
+    return SoundButton;
+  })();
 
   var fruit = new Fruit();
   var death = new Death();
@@ -549,8 +630,10 @@
   game.add(player);
   game.add(fruit);
   game.add(death);
-  game.add(pause);
+
   game.add(PauseButton);
+  game.add(SoundButton);
+  game.add(pause);
 
   $(window).on('blur', function() {
     game.pause();
