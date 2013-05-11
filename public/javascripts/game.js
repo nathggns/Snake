@@ -193,6 +193,14 @@ var Game = (function(window, document, undefined) {
           e = new GameEvent(game, e, pos);
 
           game.emit(name, e);
+
+          $.each(game.objects, function(i, obj) {
+            if ((!game.paused || obj.update_when_paused) && obj.emit) {
+              if (!obj.bounds || e.within(obj.bounds)) {
+                obj.emit(name, e);
+              }
+            }
+          });
         });
       });
     });
