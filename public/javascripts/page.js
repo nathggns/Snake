@@ -213,7 +213,7 @@
         ctx.beginPath();
         ctx.fillStyle = '#aaaaaa';
 
-        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.rect(this.unit(this.x), this.unit(this.y), this.unit(this.width), this.unit(this.height));
         ctx.closePath();
         ctx.fill();
     };
@@ -274,16 +274,16 @@
         if (this.dead) {
             ctx.beginPath();
             ctx.fillStyle = '#000000';
-            ctx.rect(0, 0, game.game.width, game.game.height);
+            ctx.rect(0, 0, this.unit(game.game.width), this.unit(game.game.height));
             ctx.fill();
 
-            ctx.font = "bold 20px sans-serif";
+            ctx.font = "bold " + this.unit(20) + "px sans-serif";
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('You died', game.game.width / 2, game.game.height / 2);
+            ctx.fillText('You died', this.unit(game.game.width / 2), this.unit(game.game.height / 2));
 
-            ctx.font = "normal 12px sans-serif";
+            ctx.font = "normal " + this.unit(12) + "px sans-serif";
 
             var string = 'Press the space key to continue';
 
@@ -291,7 +291,7 @@
                 string = 'Tap to continue';
             }
 
-            ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
+            ctx.fillText(string, this.unit(game.game.width / 2), this.unit(game.game.height / 2 + 40));
         }
     };
 
