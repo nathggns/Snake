@@ -35,7 +35,8 @@
 
   var sounds = {
     bite: $('.bite-sound')[0],
-    death: $('.death-sound')[0]
+    death: $('.death-sound')[0],
+    background: $('.background-sound')[0]
   };
 
   var images = {
