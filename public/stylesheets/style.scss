@@ -5,6 +5,7 @@
 /* Page Styles */
 body {
     background: black;
+    overflow: hidden;
 }
 
 .game {
@@ -34,6 +35,9 @@ body {
     -webkit-user-select: none; /* Disable selection/Copy of UIWebView */
 }
 
-.audios {
-    display: none;
+.audios, .images {
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 100%;
 }

@@ -38,6 +38,11 @@
     death: $('.death-sound')[0]
   };
 
+  var images = {
+    sound: $('.sound')[0],
+    mute: $('.sound-mute')[0]
+  };
+
   var Background = (function() {
     var Background = function Background() {
         this.order = 1;
@@ -539,6 +544,8 @@
 
     return PauseButton;
   })();
+
+  console.log(PauseButton.prototype);
 
   var fruit = new Fruit();
   var death = new Death();
