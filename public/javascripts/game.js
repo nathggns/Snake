@@ -1,4 +1,48 @@
+var GameObject = (function(window, document, undefined) {
+  var GameObject = function(){};
+
+  GameObject.inherit(EventEmitter);
+
+  return GameObject;
+})();
+
 var Game = (function(window, document, undefined) {
+
+  var GameEvent = function GameEvent(game, e, pos) {
+    this.x = e.pageX - pos.left;
+    this.y = e.pageY - pos.top;
+
+    this.x /= game.resolution;
+    this.y /= game.resolution;
+
+    this.e = e;
+    this.pos = pos;
+    this.game = game;
+  };
+
+  GameEvent.prototype.bounds = function(bounds) {
+    if (typeof bounds !== 'object') {
+      bounds = {
+        x: arguments[0],
+        y: arguments[1],
+        width: arguments[2],
+        height: arguments[3]
+      };
+    }
+
+    bounds.tl = [bounds.x, bounds.y];
+    bounds.tr = [bounds.x + bounds.width, bounds.y];
+    bounds.bl = [bounds.x, bounds.y + bounds.height];
+    bounds.br = [bounds.x + bounds.width, bounds.y + bounds.height];
+
+    return bounds;
+  };
+
+  GameEvent.prototype.within = function() {
+    var bounds = this.bounds.apply(this, arguments);
+
+    return this.x >= bounds.tl[0] && this.x <= bounds.tr[0] && this.y >= bounds.tl[1] && this.y <= bounds.bl[1];
+  };
 
   var Game = function Game(canvas, delay) {
     this.canvas = canvas;
@@ -7,7 +51,7 @@ var Game = (function(window, document, undefined) {
     this.ctx = this.canvas.getContext('2d');
     this.game = {};
     this.keys = {};
-
+    this.paused = false;
 
     this.resolution = 1;
 
@@ -23,7 +67,13 @@ var Game = (function(window, document, undefined) {
     this.delay = delay || 16;
   };
 
+  Game.inherit(EventEmitter);
+
   Game.prototype.add = function(obj) {
+
+    if (typeof obj === 'function') {
+      obj = new obj(this);
+    }
 
     obj.game = this;
 
@@ -47,6 +97,14 @@ var Game = (function(window, document, undefined) {
     return this;
   };
 
+  Game.prototype.pause = function() {
+    this.paused = true;
+  };
+
+  Game.prototype.play = function() {
+    this.paused = false;
+  };
+
   Game.prototype.assignResizeHandler = function() {
 
     var game = this;
@@ -56,7 +114,7 @@ var Game = (function(window, document, undefined) {
       game.game.width = parseInt(game.$canvas.attr('width'), 10);
       game.game.height = parseInt(game.$canvas.attr('height'), 10);
 
-      game.resolution = game.game.width / game.defaults.width;
+      game.resolution = parseInt(game.$canvas.css('width'), 10) / game.defaults.width;
 
       game.canvas.width = game.game.width;
       game.canvas.height = game.game.height;
@@ -66,16 +124,17 @@ var Game = (function(window, document, undefined) {
       return handler;
     };
 
-   $(document).on('resize', handler());
+   $(window).on('resize', handler());
   };
 
   Game.prototype.render = function(update) {
     this.ctx.clearRect(0, 0, this.game.width, this.game.height);
 
     var game = this;
+    var paused = this.paused;
 
     this.objects.forEach(function(object) {
-      if (update && object.update) object.update(game.ctx);
+      if (update && object.update && (!paused || object.update_when_paused)) object.update(game.ctx);
       object.render(game.ctx);
     });
   };
@@ -93,6 +152,7 @@ var Game = (function(window, document, undefined) {
 
     canvas.on('keydown', function(e) {
       game.keys[e.which] = true;
+      game.emit('key', e.which);
     });
 
     canvas.on('keyup', function(e) {
@@ -116,7 +176,36 @@ var Game = (function(window, document, undefined) {
       canvas.focus();
     });
 
-    canvas.add($touch).on('touchstart', function(e) {
+    var $both = canvas.add($touch);
+
+    $.each([{
+      object: $touch,
+      events: ['click', 'mousedown', 'mouseup']
+    }, {
+      object: $both,
+      events: ['touchstart', 'touchend']
+    }], function(i, obj) {
+
+      $.each(obj.events, function(i, name) {
+        obj.object.on(name, function(e) {
+          var pos = canvas.offset();
+
+          e = new GameEvent(game, e, pos);
+
+          game.emit(name, e);
+
+          $.each(game.objects, function(i, obj) {
+            if ((!game.paused || obj.update_when_paused) && obj.emit) {
+              if (!obj.bounds || e.within(obj.bounds)) {
+                obj.emit(name, e);
+              }
+            }
+          });
+        });
+      });
+    });
+
+    $both.on('touchstart', function(e) {
 
       started = true;
       time = 0;
@@ -128,7 +217,7 @@ var Game = (function(window, document, undefined) {
       });
     });
 
-    canvas.add($touch).on('touchend', function(e) {
+    $both.on('touchend', function(e) {
       started = false;
 
       $.each(game.objects, function(i, obj) {
@@ -159,7 +248,7 @@ var Game = (function(window, document, undefined) {
 
     })();
 
-    canvas.add($touch).touchwipe({
+    $both.touchwipe({
       wipeLeft: function() {
         started = false;
         $.each(game.objects, function(i, obj) {
@@ -167,6 +256,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('left');
           }
         });
+
+        game.emit('swipe', 'left');
       },
 
       wipeRight: function() {
@@ -176,6 +267,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('right');
           }
         });
+
+        game.emit('swipe', 'right');
       },
 
       wipeUp: function() {
@@ -185,6 +278,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('down');
           }
         });
+
+        game.emit('swipe', 'down');
       },
 
       wipeDown: function() {
@@ -194,6 +289,8 @@ var Game = (function(window, document, undefined) {
             obj.swipe('up');
           }
         });
+
+        game.emit('swipe', 'up');
       },
 
       min_move_x: 20,
