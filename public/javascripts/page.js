@@ -34,7 +34,8 @@
   var size = 20;
 
   var sounds = {
-    bite: $('.bite-sound')[0]
+    bite: $('.bite-sound')[0],
+    death: $('.death-sound')[0]
   };
 
   var Background = (function() {
@@ -198,6 +199,9 @@
     };
 
     Player.prototype.die = function() {
+
+        sounds.death.play();
+
         return this.death.die(this);
     };
 
