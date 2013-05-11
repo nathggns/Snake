@@ -469,7 +469,7 @@
         this.x = game.game.width - this.width - (size / 2);
         this.y = game.game.height - this.height - (size / 2);
 
-        if (this.b_init) this.apply(this, arguments);
+        if (this.b_init) this.b_init.apply(this, arguments);
 
         this.bounds = {
             x: this.x,
@@ -512,7 +512,7 @@
 
         if (this.game.paused) return;
 
-        Button.prototype.render.call(this, ctx);
+        Button.prototype.render.call(this, arguments);
 
         ctx.beginPath();
         ctx.fillStyle = '#fff';
