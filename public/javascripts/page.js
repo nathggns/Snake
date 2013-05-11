@@ -472,13 +472,18 @@
   var Button = (function() {
     var Button = function(game){
         this.order = 99;
+    };
+
+    Button.inherit(GameObject);
+
+    Button.prototype.init = function() {
+
+        var game = this.game;
 
         this.width = this.height = size;
 
         this.x = game.game.width - this.width - (size / 2);
         this.y = game.game.height - this.height - (size / 2);
-
-        if (this.b_init) this.b_init.apply(this, arguments);
 
         this.bounds = {
             x: this.x,
@@ -487,8 +492,6 @@
             height: this.height
         };
     };
-
-    Button.inherit(GameObject);
 
     Button.prototype.render = function(ctx) {
         ctx.beginPath();
@@ -508,9 +511,9 @@
 
     PauseButton.inherit(Button);
 
-    PauseButton.prototype.b_init = function(game) {
+    PauseButton.prototype.init = function(game) {
 
-        this.order = 98;
+        Button.prototype.init.apply(this, arguments);
 
         this.on('click', function() {
             game.pause();
@@ -556,7 +559,8 @@
 
     SoundButton.inherit(Button);
 
-    SoundButton.prototype.b_init = function(game) {
+    SoundButton.prototype.init = function() {
+        Button.prototype.init.apply(this, arguments);
 
         this.x -= this.width + (size / 2);
 
@@ -580,6 +584,7 @@
     };
 
     SoundButton.prototype.update = function() {
+
         if (this.timer >= 30 && 77 in game.keys || 83 in game.keys) {
             this.toggle_sound();
             this.timer = 0;
