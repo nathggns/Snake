@@ -60,6 +60,8 @@
         }
     };
 
+    Background.inherit(GameObject);
+
     return Background;
   })();
 
@@ -246,6 +248,8 @@
         }
     };
 
+    Player.inherit(GameObject);
+
     return Player;
 
   })();
@@ -304,6 +308,8 @@
             this.start();
         }
     };
+
+    Death.inherit(GameObject);
 
     return Death;
 
@@ -379,6 +385,8 @@
         }
     };
 
+    Fruit.inherit(GameObject);
+
     return Fruit;
 
   })();
@@ -430,6 +438,8 @@
             ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
         }
     };
+
+    Pause.inherit(GameObject);
 
     return Pause;
   })();
