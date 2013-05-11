@@ -7,7 +7,7 @@ var Game = (function(window, document, undefined) {
     this.ctx = this.canvas.getContext('2d');
     this.game = {};
     this.keys = {};
-
+    this.paused = false;
 
     this.resolution = 1;
 
@@ -47,6 +47,14 @@ var Game = (function(window, document, undefined) {
     return this;
   };
 
+  Game.prototype.pause = function() {
+    this.paused = true;
+  };
+
+  Game.prototype.play = function() {
+    this.paused = false;
+  };
+
   Game.prototype.assignResizeHandler = function() {
 
     var game = this;
@@ -73,9 +81,10 @@ var Game = (function(window, document, undefined) {
     this.ctx.clearRect(0, 0, this.game.width, this.game.height);
 
     var game = this;
+    var paused = this.paused;
 
     this.objects.forEach(function(object) {
-      if (update && object.update) object.update(game.ctx);
+      if (update && object.update && (!paused || object.update_when_paused)) object.update(game.ctx);
       object.render(game.ctx);
     });
   };
