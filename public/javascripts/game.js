@@ -25,6 +25,10 @@ var Game = (function(window, document, undefined) {
 
   Game.prototype.add = function(obj) {
 
+    if (typeof obj === 'function') {
+      obj = new obj(this);
+    }
+
     obj.game = this;
 
     if (typeof obj.init === 'function') obj.init();
