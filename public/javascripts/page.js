@@ -14,7 +14,10 @@
   var canvas = $('#canvas').add('#background-canvas');
 
   var scale = function() {
-    var min = document.width > document.height ? document.height : document.width;
+    var touch = $('.touch-capture');
+    var dimensions = [parseInt(touch.css('width'), 10), parseInt(touch.css('height'), 10)];
+
+    var min = Math.min.apply(Math, dimensions);
 
     canvas.css('width', min + 'px');
     canvas.css('height', min + 'px');
