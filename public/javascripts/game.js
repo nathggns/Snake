@@ -3,6 +3,16 @@ var GameObject = (function(window, document, undefined) {
 
   GameObject.inherit(EventEmitter);
 
+  GameObject.prototype.unit = function(amount) {
+    amount = amount * this.game.resolution;
+
+    if (this.game.draw_at_true_size && this.game.draw_factor) {
+      amount = Math.ceil(amount);
+    }
+
+    return amount;
+  };
+
   return GameObject;
 })();
 
@@ -44,7 +54,7 @@ var Game = (function(window, document, undefined) {
     return this.x >= bounds.tl[0] && this.x <= bounds.tr[0] && this.y >= bounds.tl[1] && this.y <= bounds.bl[1];
   };
 
-  var Game = function Game(canvas, delay) {
+  var Game = function Game(canvas, delay, draw, draw_factor) {
     this.canvas = canvas;
     this.$canvas = $(canvas);
     this.objects = [];
@@ -52,13 +62,17 @@ var Game = (function(window, document, undefined) {
     this.game = {};
     this.keys = {};
     this.paused = false;
-
     this.resolution = 1;
+    this.draw_at_true_size = draw;
+    this.draw_factor = draw_factor;
 
     this.defaults = {
       width: canvas.width,
       height: canvas.height
     };
+
+    this.game.width = this.defaults.width;
+    this.game.height = this.defaults.height;
 
     this.assignResizeHandler();
     this.assignKeyHandler();
@@ -111,13 +125,23 @@ var Game = (function(window, document, undefined) {
 
     var handler = function() {
 
-      game.game.width = parseInt(game.$canvas.attr('width'), 10);
-      game.game.height = parseInt(game.$canvas.attr('height'), 10);
-
       game.resolution = parseInt(game.$canvas.css('width'), 10) / game.defaults.width;
 
-      game.canvas.width = game.game.width;
-      game.canvas.height = game.game.height;
+      var width = game.game.width;
+      var height = game.game.height;
+
+      if (game.draw_at_true_size) {
+        width *= game.resolution;
+        height *= game.resolution;
+
+        if (game.draw_factor) {
+          width = Math.ceil(width / game.draw_factor) * game.draw_factor;
+          height = Math.ceil(height / game.draw_factor) * game.draw_factor;
+        }
+      }
+
+      game.canvas.width = width;
+      game.canvas.height = height;
 
       game.render();
 
