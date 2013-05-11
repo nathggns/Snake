@@ -33,6 +33,10 @@
 
   var size = 20;
 
+  var sounds = {
+    bite: $('.bite-sound')[0]
+  };
+
   var Background = (function() {
     var Background = function Background() {
         this.order = 1;
@@ -182,6 +186,7 @@
         if (this.x === this.fruit.x && this.y === this.fruit.y) {
             this.fruit.init();
             this.add_tail();
+            sounds.bite.play();
         }
 
         $.each(this.tails, function(i, tail) {
@@ -207,7 +212,6 @@
         ctx.closePath();
         ctx.fill();
 
-        
         $.each(this.tails, function() {
             ctx.beginPath();
             ctx.fillStyle = '#ff0000';
