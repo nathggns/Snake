@@ -14,7 +14,10 @@
   var canvas = $('#canvas').add('#background-canvas');
 
   var scale = function() {
-    var min = document.width > document.height ? document.height : document.width;
+    var touch = $('.touch-capture');
+    var dimensions = [parseInt(touch.css('width'), 10), parseInt(touch.css('height'), 10)];
+
+    var min = Math.min.apply(Math, dimensions);
 
     canvas.css('width', min + 'px');
     canvas.css('height', min + 'px');
@@ -56,6 +59,8 @@
             }
         }
     };
+
+    Background.inherit(GameObject);
 
     return Background;
   })();
@@ -243,6 +248,8 @@
         }
     };
 
+    Player.inherit(GameObject);
+
     return Player;
 
   })();
@@ -251,7 +258,7 @@
 
     var Death = function Death() {
         this.dead = false;
-        this.order = 5;
+        this.order = 99;
     };
 
     Death.prototype.die = function(player) {
@@ -301,6 +308,8 @@
             this.start();
         }
     };
+
+    Death.inherit(GameObject);
 
     return Death;
 
@@ -376,17 +385,128 @@
         }
     };
 
+    Fruit.inherit(GameObject);
+
     return Fruit;
 
+  })();
+
+  var Pause = (function() {
+    var Pause = function Pause() {
+        this.order = 5;
+        this.update_when_paused = true;
+    };
+
+    Pause.prototype.update = function() {
+        if (this.game.paused && 32 in game.keys) {
+            this.game.play();
+        } else if (!this.game.paused && 80 in game.keys) {
+            this.game.pause();
+        }
+    };
+
+    Pause.prototype.touch_start = function() {
+        if (this.game.paused) {
+            this.game.play();
+        }
+    };
+
+    Pause.prototype.render = function(ctx) {
+        if (this.game.paused) {
+
+            var game = this.game;
+
+            ctx.beginPath();
+            ctx.fillStyle = '#000000';
+            ctx.rect(0, 0, game.game.width, game.game.height);
+            ctx.fill();
+
+            ctx.font = "bold 20px sans-serif";
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Game is paused', game.game.width / 2, game.game.height / 2);
+
+            ctx.font = "normal 12px sans-serif";
+
+            var string = 'Press the space key to continue';
+
+            if (Modernizr.touch) {
+                string = 'Tap to continue';
+            }
+
+            ctx.fillText(string, game.game.width / 2, game.game.height / 2 + 40);
+        }
+    };
+
+    Pause.inherit(GameObject);
+
+    return Pause;
+  })();
+
+  var PauseButton = (function() {
+    var PauseButton = function PauseButton(game) {
+        this.order = 98;
+
+        this.width = this.height = 30;
+
+        this.x = game.game.width - this.width - 10;
+        this.y = game.game.height - this.height - 10;
+
+        this.bounds = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+
+        this.on('click', function(e) {
+            game.pause();
+        });
+    };
+
+    PauseButton.prototype.render = function(ctx) {
+
+        if (this.game.paused) return;
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0, 0, 0, .5)';
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+
+        ctx.rect(this.x + (this.width / 6), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        ctx.fill();
+
+        ctx.rect(this.x + this.width - (this.width / 6) - (this.width / 4), this.y + (this.height / 6), (this.width / 4), this.height - (this.height / 3));
+        ctx.fill();
+
+        ctx.closePath();
+    };
+
+    PauseButton.inherit(GameObject);
+
+    return PauseButton;
   })();
 
   var fruit = new Fruit();
   var death = new Death();
   var player = new Player(fruit, death);
+  var pause = new Pause();
+
+
 
   bgame.add(new Background());
   game.add(player);
   game.add(fruit);
   game.add(death);
+  game.add(pause);
+  game.add(PauseButton);
+
+  $(window).on('blur', function() {
+    game.pause();
+  });
 
 })(this, this.document);
