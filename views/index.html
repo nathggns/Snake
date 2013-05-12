@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+
     <title>Snake</title>
 
     <link rel="stylesheet" href="/stylesheets/style.css">
@@ -26,7 +28,23 @@
     <script src="/javascripts/page.js"></script>
 
     <link rel="apple-touch-icon-precomposed" href="/images/icon.png">
-    <link rel="shortcut icon" href="/images/icon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="/images/icon.png" type="image/x-icon">
+
+
+    <!-- 320x460, iPhone -->
+    <link rel="apple-touch-startup-image" href="/images/splash.png" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)">
+
+    <!-- 640x920, iPhone Retina -->
+    <link rel="apple-touch-startup-image" href="/images/splash-retina.png" media="(device-width:320px) and (device-height:460px) (-webkit-device-pixel-ratio: 2)">
+
+    <!-- 640x1096, iPhone 5 -->
+    <link rel="apple-touch-startup-image" href="/images/splash-i5.png" media="(device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio: 2)">
+
+    <!-- 1536 x 2008, iPad Retina Portrait -->
+    <link rel="apple-touch-startup-image" href="/images/splash-ipad-portrait.png" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)">
+
+    <!-- 1494 x 2048, iPad Retina Landscape -->
+    <link rel="apple-touch-startup-image" href="/images/splash-ipad-landscape.png" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)">
 </head>
 <body>
 
