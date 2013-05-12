@@ -484,6 +484,14 @@
 
         this.x = game.game.width - this.width - (size / 2);
         this.y = game.game.height - this.height - (size / 2);
+
+        if (Modernizr.touch) {
+            this.width *= 2;
+            this.height *= 2;
+
+            this.x -= this.width / 2;
+            this.y -= this.height / 2;
+        }
     };
 
     Button.prototype.get_bounds = function() {
